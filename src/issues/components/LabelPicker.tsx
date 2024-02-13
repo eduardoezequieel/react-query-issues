@@ -1,14 +1,34 @@
+import { useLabels } from "../../hooks/useLabels";
+import { LoadingIcon } from "../../shared/components/LoadingIcon";
 
-export const LabelPicker = () => {
+type Props = {
+  selectedLabels: string[];
+  onChange: (labelName: string) => void;
+};
+
+export const LabelPicker = ({ selectedLabels, onChange }: Props) => {
+  const { isLoading, data } = useLabels();
+
+  if (isLoading) {
+    return <LoadingIcon />;
+  }
   return (
     <div>
-        <span 
-            className="badge rounded-pill m-1 label-picker"
-            style={{ border: `1px solid #ffccd3`, color: '#ffccd3' }}
+      {data?.map((label) => (
+        <span
+          key={label.id}
+          className={`badge rounded-pill m-1 label-picker ${
+            selectedLabels.includes(label.name) && "labelActive"
+          }`}
+          style={{
+            border: `1px solid #${label.color}`,
+            color: `#${label.color}`,
+          }}
+          onClick={() => onChange(label.name)}
         >
-            Primary
+          {label.name}
         </span>
-        
+      ))}
     </div>
-  )
-}
+  );
+};
